@@ -1,0 +1,30 @@
+How to do:
+
+1. Do this for every individual positive image you want included.
+opencv_createsamples -img ../single_sideviews/brown2.png -info brown.txt -w 50 -h 80 -num 1000 -bg ../neg.txt -maxxangle 0.6 -maxyangle 0 -maxzangle 0.3 -maxidev 100 -bgcolor 0 -bgthresh 0
+opencv_createsamples -info brown/brown.txt -vec brown/brown.vec -w 50 -h 80 -num 1000
+
+2. After you have all the .vec files you want, merge them.
+python mergevec.py -v vecs/ -o combined.vec
+
+3. Train cascade using the merged .vec file.
+opencv_traincascade -data cascade -vec combined.vec -numPos 1000 -numNeg 1500 -bg /home/nick/487/autocraft/neg.txt -maxFalseAlarmRate 0.5 -acceptanceRatioBreakValue 10e-5 -featureType LBP -w 50 -h 80 -precalcValBufSize 4098 -precalcIdxBufSize 4098
+
+TRAINING 10-stage =====
+<BEGIN
+POS count : consumed   1000 : 1050
+NEG count : acceptanceRatio    1500 : 0.00169622
+Precalculation time: 97
++----+---------+---------+
+|  N |    HR   |    FA   |
++----+---------+---------+
+|   1|        1|        1|
++----+---------+---------+
+|   2|        1|        1|
++----+---------+---------+
+|   3|        1| 0.648667|
++----+---------+---------+
+|   4|        1| 0.735333|
++----+---------+---------+
+|   5|    0.996| 0.423333|
++----+---------+---------+
