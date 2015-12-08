@@ -4,6 +4,7 @@ import pyautogui
 import cv2
 import numpy as np
 
+# Take a screenshot, format it as a grayscale OpenCV image and return.
 def screencap():
 	try:
 		img_width = gtk.gdk.screen_width()
@@ -30,22 +31,28 @@ def screencap():
 		exit()
 	
 	img_arr = screencap.get_pixels_array()
-	#img_arr = np.fromstring(pixbuf, np.uint8).reshape(img_height, img_width, ncolors)
 	image = cv2.cvtColor(img_arr, cv2.COLOR_BGR2GRAY)
 	return image
 
 if __name__ == '__main__':
+	# Pass the cascade.xml file as an argument.
 	cascPath = sys.argv[1]
 	villagerCascade = cv2.CascadeClassifier(cascPath)
+
+	# Continuously take screenshots and process them, looking for objects.
 	while(True):
 		image = screencap()
+		# To be detected, villager must be at least 50x80.
 		villagers = villagerCascade.detectMultiScale(
 			image,
 			scaleFactor=1.1,
 			minNeighbors=25,
 			minSize=(50,80),
 			)
+
+		# Check if any villagers were detected. If so, just press 'b' for 100ms.
 		if len(villagers) > 0:
+		# Commented out the rectangle drawing part
 		#	for (x, y, w, h) in villagers:
 		#		cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 		#	cv2.imshow("Villagers", image)
